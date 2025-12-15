@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# --- CONFIGURATION ---
+ENGINE_DIR="/data/data/com.termux/files/home/llama.cpp/build/bin"
+MODEL_NAME="google_gemma-3n-E2B-it-Q4_K_M.gguf"
+
+# --- CHECKS ---
+if [ ! -d "$ENGINE_DIR" ]; then
+    echo "❌ Error: Directory not found: $ENGINE_DIR"
+    exit 1
+fi
+
+# --- LAUNCH ---
+cd "$ENGINE_DIR" || exit
+export LD_LIBRARY_PATH=.
+
+echo "🚀 Starting Local AI..."
+echo "   🧠 Model: $MODEL_NAME"
+echo "   📝 Context: 16384 (High Memory Mode)"
+
+# Fixed command: Removed bare --flash-attn flag
+./llama-server \
+    -m "$MODEL_NAME" \
+    --ctx-size 16384 \
+    --flash-attn auto \
+    --host 127.0.0.1 \
+    --port 8080 \
+    --n-gpu-layers 0
